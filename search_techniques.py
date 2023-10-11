@@ -66,44 +66,64 @@ def expand_tree(node):
 def depth_first_search_tree(start, goal):
     stack = [Node(start)]
     expanded_states = set()
+    unexpanded_nodes = []  # List to keep track of unexpanded nodes
 
     while stack:
         node = stack.pop()
         expanded_states.add(node.state)
         if node.state == goal:
-            return get_solution(node), list(expanded_states), []
+            return get_solution(node), list(expanded_states), unexpanded_nodes
 
-        stack.extend(child for child in expand_tree(node)
-                     if child.state not in expanded_states)
+        # Reversed child nodes to maintain the order
+        children = expand_tree(node)
+        children.reverse()
+
+        for child in children:
+            if child.state not in expanded_states:
+                stack.append(child)
+            else:
+                # Add to unexpanded nodes list
+                unexpanded_nodes.append(child.state)
 
 
 def breadth_first_search_tree(start, goal):
     queue = [Node(start)]
     expanded_states = set()
+    unexpanded_nodes = []  # List to keep track of unexpanded nodes
 
     while queue:
         node = queue.pop(0)
         expanded_states.add(node.state)
         if node.state == goal:
-            return get_solution(node), list(expanded_states), []
+            return get_solution(node), list(expanded_states), unexpanded_nodes
 
-        queue.extend(child for child in expand_tree(node)
-                     if child.state not in expanded_states)
+        children = expand_tree(node)
+
+        for child in children:
+            if child.state not in expanded_states:
+                queue.append(child)
+            else:
+                # Add to unexpanded nodes list
+                unexpanded_nodes.append(child.state)
 
 
 def uniform_cost_search_tree(start, goal):
     queue = [(0, Node(start))]
     expanded_states = set()
+    unexpanded_nodes = []  # List to keep track of unexpanded nodes
 
     while queue:
         _, node = heapq.heappop(queue)
         expanded_states.add(node.state)
         if node.state == goal:
-            return get_solution(node), list(expanded_states), []
+            return get_solution(node), list(expanded_states), unexpanded_nodes
 
         for child in expand_tree(node):
             if child.state not in expanded_states:
                 heapq.heappush(queue, (child.cost, child))
+            else:
+                # Add to unexpanded nodes list
+                unexpanded_nodes.append(child.state)
 
 # Greedy Search Function
 
@@ -111,16 +131,20 @@ def uniform_cost_search_tree(start, goal):
 def greedy_search_tree(start, goal):
     queue = [(heuristics[start], Node(start))]
     expanded_states = set()
+    unexpanded_nodes = []  # List to keep track of unexpanded nodes
 
     while queue:
         _, node = heapq.heappop(queue)
         expanded_states.add(node.state)
         if node.state == goal:
-            return get_solution(node), list(expanded_states), []
+            return get_solution(node), list(expanded_states), unexpanded_nodes
 
         for child in expand_tree(node):
             if child.state not in expanded_states:
                 heapq.heappush(queue, (heuristics[child.state], child))
+            else:
+                # Add to unexpanded nodes list
+                unexpanded_nodes.append(child.state)
 
 # A* Search Function
 
@@ -128,19 +152,21 @@ def greedy_search_tree(start, goal):
 def astar_search_tree(start, goal):
     queue = [(heuristics[start], 0, Node(start))]
     expanded_states = set()
+    unexpanded_nodes = []  # List to keep track of unexpanded nodes
 
     while queue:
         _, _, node = heapq.heappop(queue)
         expanded_states.add(node.state)
         if node.state == goal:
-            return get_solution(node), list(expanded_states), []
+            return get_solution(node), list(expanded_states), unexpanded_nodes
 
         for child in expand_tree(node):
             if child.state not in expanded_states:
                 heapq.heappush(
                     queue, (heuristics[child.state] + child.cost, child.cost, child))
-
-# Graph Search Functions (Note: Greedy and A* are implemented for graph search as well)
+            else:
+                # Add to unexpanded nodes list
+                unexpanded_nodes.append(child.state)
 
 # Graph Search Functions
 
@@ -158,44 +184,63 @@ def expand_graph(node):
 def depth_first_search_graph(start, goal):
     stack = [Node(start)]
     expanded_states = set()
+    unexpanded_nodes = []  # List to keep track of unexpanded nodes
 
     while stack:
         node = stack.pop()
         expanded_states.add(node.state)
         if node.state == goal:
-            return get_solution(node), list(expanded_states), []
+            return get_solution(node), list(expanded_states), unexpanded_nodes
 
-        stack.extend(child for child in expand_graph(node)
-                     if child.state not in expanded_states)
+        children = expand_graph(node)
+        children.reverse()
+
+        for child in children:
+            if child.state not in expanded_states:
+                stack.append(child)
+            else:
+                # Add to unexpanded nodes list
+                unexpanded_nodes.append(child.state)
 
 
 def breadth_first_search_graph(start, goal):
     queue = [Node(start)]
     expanded_states = set()
+    unexpanded_nodes = []  # List to keep track of unexpanded nodes
 
     while queue:
         node = queue.pop(0)
         expanded_states.add(node.state)
         if node.state == goal:
-            return get_solution(node), list(expanded_states), []
+            return get_solution(node), list(expanded_states), unexpanded_nodes
 
-        queue.extend(child for child in expand_graph(node)
-                     if child.state not in expanded_states)
+        children = expand_graph(node)
+
+        for child in children:
+            if child.state not in expanded_states:
+                queue.append(child)
+            else:
+                # Add to unexpanded nodes list
+                unexpanded_nodes.append(child.state)
 
 
 def uniform_cost_search_graph(start, goal):
     queue = [(0, Node(start))]
     expanded_states = set()
+    unexpanded_nodes = []  # List to keep track of unexpanded nodes
 
     while queue:
         _, node = heapq.heappop(queue)
         expanded_states.add(node.state)
         if node.state == goal:
-            return get_solution(node), list(expanded_states), []
+            return get_solution(node), list(expanded_states), unexpanded_nodes
 
         for child in expand_graph(node):
             if child.state not in expanded_states:
                 heapq.heappush(queue, (child.cost, child))
+            else:
+                # Add to unexpanded nodes list
+                unexpanded_nodes.append(child.state)
 
 # Greedy Search for Graph
 
@@ -203,16 +248,20 @@ def uniform_cost_search_graph(start, goal):
 def greedy_search_graph(start, goal):
     queue = [(heuristics[start], Node(start))]
     expanded_states = set()
+    unexpanded_nodes = []  # List to keep track of unexpanded nodes
 
     while queue:
         _, node = heapq.heappop(queue)
         expanded_states.add(node.state)
         if node.state == goal:
-            return get_solution(node), list(expanded_states), []
+            return get_solution(node), list(expanded_states), unexpanded_nodes
 
         for child in expand_graph(node):
             if child.state not in expanded_states:
                 heapq.heappush(queue, (heuristics[child.state], child))
+            else:
+                # Add to unexpanded nodes list
+                unexpanded_nodes.append(child.state)
 
 # A* Search for Graph
 
@@ -220,18 +269,21 @@ def greedy_search_graph(start, goal):
 def astar_search_graph(start, goal):
     queue = [(heuristics[start], 0, Node(start))]
     expanded_states = set()
+    unexpanded_nodes = []  # List to keep track of unexpanded nodes
 
     while queue:
         _, _, node = heapq.heappop(queue)
         expanded_states.add(node.state)
         if node.state == goal:
-            return get_solution(node), list(expanded_states), []
+            return get_solution(node), list(expanded_states), unexpanded_nodes
 
         for child in expand_graph(node):
             if child.state not in expanded_states:
                 heapq.heappush(
                     queue, (heuristics[child.state] + child.cost, child.cost, child))
-
+            else:
+                # Add to unexpanded nodes list
+                unexpanded_nodes.append(child.state)
 
 # Helper function to retrieve the solution path
 
@@ -251,76 +303,86 @@ if __name__ == "__main__":
     goal_node = 'G'
 
     # Tree Search
-    dfs_tree_path, dfs_tree_expanded, _ = depth_first_search_tree(
+    dfs_tree_path, dfs_tree_expanded, dfs_tree_unexpanded = depth_first_search_tree(
         start_node, goal_node)
-    bfs_tree_path, bfs_tree_expanded, _ = breadth_first_search_tree(
+    bfs_tree_path, bfs_tree_expanded, bfs_tree_unexpanded = breadth_first_search_tree(
         start_node, goal_node)
-    ucs_tree_path, ucs_tree_expanded, _ = uniform_cost_search_tree(
+    ucs_tree_path, ucs_tree_expanded, ucs_tree_unexpanded = uniform_cost_search_tree(
         start_node, goal_node)
-    greedy_tree_path, greedy_tree_expanded, _ = greedy_search_tree(
+    greedy_tree_path, greedy_tree_expanded, greedy_tree_unexpanded = greedy_search_tree(
         start_node, goal_node)
-    astar_tree_path, astar_tree_expanded, _ = astar_search_tree(
+    astar_tree_path, astar_tree_expanded, astar_tree_unexpanded = astar_search_tree(
         start_node, goal_node)
 
     # Graph Search
-    dfs_graph_path, dfs_graph_expanded, _ = depth_first_search_graph(
+    dfs_graph_path, dfs_graph_expanded, dfs_graph_unexpanded = depth_first_search_graph(
         start_node, goal_node)
-    bfs_graph_path, bfs_graph_expanded, _ = breadth_first_search_graph(
+    bfs_graph_path, bfs_graph_expanded, bfs_graph_unexpanded = breadth_first_search_graph(
         start_node, goal_node)
-    ucs_graph_path, ucs_graph_expanded, _ = uniform_cost_search_graph(
+    ucs_graph_path, ucs_graph_expanded, ucs_graph_unexpanded = uniform_cost_search_graph(
         start_node, goal_node)
-    greedy_graph_path, greedy_graph_expanded, _ = greedy_search_graph(
+    greedy_graph_path, greedy_graph_expanded, greedy_graph_unexpanded = greedy_search_graph(
         start_node, goal_node)
-    astar_graph_path, astar_graph_expanded, _ = astar_search_graph(
+    astar_graph_path, astar_graph_expanded, astar_graph_unexpanded = astar_search_graph(
         start_node, goal_node)
 
     # Print results
     print("Depth First Search (Tree):")
     print("Expanded States:", dfs_tree_expanded)
-    print("Path:", dfs_tree_path)
+    print("Path:", " -> ".join(dfs_tree_path))
+    print("Unexpanded Nodes:", dfs_tree_unexpanded)
     print()
 
     print("Breadth First Search (Tree):")
     print("Expanded States:", bfs_tree_expanded)
-    print("Path:", bfs_tree_path)
+    print("Path:", " -> ".join(bfs_tree_path))
+    print("Unexpanded Nodes:", bfs_tree_unexpanded)
     print()
 
     print("Uniform Cost Search (Tree):")
     print("Expanded States:", ucs_tree_expanded)
-    print("Path:", ucs_tree_path)
+    print("Path:", " -> ".join(ucs_tree_path))
+    print("Unexpanded Nodes:", ucs_tree_unexpanded)
     print()
 
     print("Greedy Search (Tree):")
     print("Expanded States:", greedy_tree_expanded)
-    print("Path:", greedy_tree_path)
+    print("Path:", " -> ".join(greedy_tree_path))
+    print("Unexpanded Nodes:", greedy_tree_unexpanded)
     print()
 
     print("A* Search (Tree):")
     print("Expanded States:", astar_tree_expanded)
-    print("Path:", astar_tree_path)
+    print("Path:", " -> ".join(astar_tree_path))
+    print("Unexpanded Nodes:", astar_tree_unexpanded)
     print()
 
     print("Depth First Search (Graph):")
     print("Expanded States:", dfs_graph_expanded)
-    print("Path:", dfs_graph_path)
+    print("Path:", " -> ".join(dfs_graph_path))
+    print("Unexpanded Nodes:", dfs_graph_unexpanded)
     print()
 
     print("Breadth First Search (Graph):")
     print("Expanded States:", bfs_graph_expanded)
-    print("Path:", bfs_graph_path)
+    print("Path:", " -> ".join(bfs_graph_path))
+    print("Unexpanded Nodes:", bfs_graph_unexpanded)
     print()
 
     print("Uniform Cost Search (Graph):")
     print("Expanded States:", ucs_graph_expanded)
-    print("Path:", ucs_graph_path)
+    print("Path:", " -> ".join(ucs_graph_path))
+    print("Unexpanded Nodes:", ucs_graph_unexpanded)
     print()
 
     print("Greedy Search (Graph):")
     print("Expanded States:", greedy_graph_expanded)
-    print("Path:", greedy_graph_path)
+    print("Path:", " -> ".join(greedy_graph_path))
+    print("Unexpanded Nodes:", greedy_graph_unexpanded)
     print()
 
     print("A* Search (Graph):")
     print("Expanded States:", astar_graph_expanded)
-    print("Path:", astar_graph_path)
+    print("Path:", " -> ".join(astar_graph_path))
+    print("Unexpanded Nodes:", astar_graph_unexpanded)
     print()
